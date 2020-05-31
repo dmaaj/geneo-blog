@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Geneo Blog{% endblock %}</title>
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+        {% include "components/header.html.twig" %}
+        <section class="container">
+        {% block body %}{% endblock %}
+        </section>
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+        {% include "components/footer.html.twig" %}
+
+    </body>
+</html>
