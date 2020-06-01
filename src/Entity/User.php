@@ -68,12 +68,12 @@ class User implements UserInterface
     private $username;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="author_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="author", orphanRemoval=true)
      */
     private $posts;
 
     /**
-     * @ORM\OneToMany(targetEntity=PostComment::class, mappedBy="user_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=PostComment::class, mappedBy="user", orphanRemoval=true)
      */
     private $postComments;
 
@@ -82,6 +82,7 @@ class User implements UserInterface
         $this->posts = new ArrayCollection();
         $this->postComments = new ArrayCollection();
     }
+
 
     
 
@@ -206,7 +207,7 @@ class User implements UserInterface
     {
         if (!$this->posts->contains($post)) {
             $this->posts[] = $post;
-            $post->setAuthorId($this);
+            $post->setAuthor($this);
         }
 
         return $this;
@@ -217,8 +218,8 @@ class User implements UserInterface
         if ($this->posts->contains($post)) {
             $this->posts->removeElement($post);
             // set the owning side to null (unless already changed)
-            if ($post->getAuthorId() === $this) {
-                $post->setAuthorId(null);
+            if ($post->getAuthor() === $this) {
+                $post->setAuthor(null);
             }
         }
 
@@ -237,7 +238,7 @@ class User implements UserInterface
     {
         if (!$this->postComments->contains($postComment)) {
             $this->postComments[] = $postComment;
-            $postComment->setUserId($this);
+            $postComment->setUser($this);
         }
 
         return $this;
@@ -248,12 +249,14 @@ class User implements UserInterface
         if ($this->postComments->contains($postComment)) {
             $this->postComments->removeElement($postComment);
             // set the owning side to null (unless already changed)
-            if ($postComment->getUserId() === $this) {
-                $postComment->setUserId(null);
+            if ($postComment->getUser() === $this) {
+                $postComment->setUser(null);
             }
         }
 
         return $this;
     }
+
+    
 
 }

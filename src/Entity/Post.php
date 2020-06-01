@@ -6,6 +6,7 @@ use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
@@ -28,9 +29,10 @@ class Post
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $author_id;
+    private $author;
 
     /**
+     * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(type="string", length=255)
      */
     private $slug;
@@ -38,20 +40,22 @@ class Post
     /**
      * @ORM\Column(type="text")
      */
-    private $description;
+    private $content;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $created_at;
 
     /**
+     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
 
     /**
-     * @ORM\OneToMany(targetEntity=PostComment::class, mappedBy="post_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=PostComment::class, mappedBy="post", orphanRemoval=true)
      */
     private $postComments;
 
@@ -77,14 +81,14 @@ class Post
         return $this;
     }
 
-    public function getAuthorId(): ?User
+    public function getAuthor(): ?User
     {
-        return $this->author_id;
+        return $this->author;
     }
 
-    public function setAuthorId(?User $author_id): self
+    public function setAuthor(?User $author): self
     {
-        $this->author_id = $author_id;
+        $this->author = $author;
 
         return $this;
     }
@@ -101,14 +105,14 @@ class Post
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getContent(): ?string
     {
-        return $this->description;
+        return $this->content;
     }
 
-    public function setDescription(string $description): self
+    public function setContent(string $content): self
     {
-        $this->description = $description;
+        $this->content = $content;
 
         return $this;
     }
@@ -149,7 +153,7 @@ class Post
     {
         if (!$this->postComments->contains($postComment)) {
             $this->postComments[] = $postComment;
-            $postComment->setPostId($this);
+            $postComment->setPost($this);
         }
 
         return $this;
@@ -160,8 +164,8 @@ class Post
         if ($this->postComments->contains($postComment)) {
             $this->postComments->removeElement($postComment);
             // set the owning side to null (unless already changed)
-            if ($postComment->getPostId() === $this) {
-                $postComment->setPostId(null);
+            if ($postComment->getPost() === $this) {
+                $postComment->setPost(null);
             }
         }
 

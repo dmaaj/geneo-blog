@@ -47,4 +47,13 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function create(Object $dto, Object $user)
+    {
+        $post = new Post();
+        $post->setTitle($dto->title)->setContent($dto->content)
+            ->setAuthor($user);
+        $this->_em->persist($post);
+        $this->_em->flush();
+    }
 }

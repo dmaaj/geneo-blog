@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\PostCommentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 
 /**
  * @ORM\Entity(repositoryClass=PostCommentRepository::class)
@@ -21,13 +23,13 @@ class PostComment
      * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="postComments")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $post_id;
+    private $post;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="postComments")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user_id;
+    private $user;
 
     /**
      * @ORM\Column(type="text")
@@ -35,11 +37,13 @@ class PostComment
     private $comment;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $created_at;
 
     /**
+     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
@@ -49,26 +53,26 @@ class PostComment
         return $this->id;
     }
 
-    public function getPostId(): ?Post
+    public function getPost(): ?Post
     {
-        return $this->post_id;
+        return $this->post;
     }
 
-    public function setPostId(?Post $post_id): self
+    public function setPost(?Post $post): self
     {
-        $this->post_id = $post_id;
+        $this->post = $post;
 
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): self
+    public function setUser(?User $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
