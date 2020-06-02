@@ -13,11 +13,14 @@
             role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 &vellip;
             </a>
+
+            {% if is_granted('edit', post) %}
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="postDropdown">
-                <a class="dropdown-item" href="{{ path('dashboard') }}">Edit</a>
+                <a class="dropdown-item" href="{{path('post.edit', {id : post.id})}}">Edit</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ path('app_logout') }}">Delete</a>
             </div>
+            {% endif %}
         </div>
     </div>
     <div class="d-flex">

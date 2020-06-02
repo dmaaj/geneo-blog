@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Post;
 use App\DTO\CreatePostDto;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\{Request, Response};
@@ -26,7 +27,7 @@ class PostController extends AbstractController
     }
     
     /**
-     * @Route("/{author}/{slug}", name="index")
+     * @Route("/@{author}/{slug}", name="index", methods={"GET","POST"})
      */
     public function index(String $author, String $slug, Request $request)
     {
@@ -52,10 +53,12 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/dashboard/create", name="create")
+     * @Route("/dashboard/create", name="create", methods={"GET","POST"})
      */
     public function create(Request $request, CreatePostDto $post) :Response
     {
+        $this->denyAccessUnlessGranted('create', new Post());
+
         $form = $this->createForm(CreatePostFormType::class, $post);
         $form->handleRequest($request);
         
@@ -71,4 +74,26 @@ class PostController extends AbstractController
             'createPost' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/dashboard/p/{id}/edit", name="edit", methods={"GET","PUT"})
+     */
+    public function edit(Post $post, Request $request)
+    {
+        $this->denyAccessUnlessGranted('edit', $post);
+
+        dd($post);
+    }
+
+    /**
+     * @Route("/dashboard/p/{id}/delete", name="delete", methods={"delete"})
+     */
+    public function delete(Post $post, Request $request)
+    {
+        $this->denyAccessUnlessGranted('edit', $post);
+
+        dd($post);
+    }
+
+
 }
