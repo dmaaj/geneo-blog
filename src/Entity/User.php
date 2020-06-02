@@ -77,6 +77,7 @@ class User implements UserInterface
      */
     private $postComments;
 
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -257,6 +258,10 @@ class User implements UserInterface
         return $this;
     }
 
-    
 
+    public function getGravatarUrl()
+    {
+        $emailHash = md5(strtolower(trim($this->email)));
+        return "https://www.gravatar.com/avatar/$emailHash?s=200";
+    }
 }

@@ -5,20 +5,20 @@
 {% endblock %}
 
 {% block body %}
-<section class="g-form col-md-6">
+<section class="g-form">
 
     {% for flashError in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flashError }}</div>
     {% endfor %}
-    <div class="card">
-        <div class="card-header">
-            <h3>Create Post</h1>
-        </div>
+        <h3>Create Post</h1>
+        <div class="card">
         <div class="card-body">
         {{ form_start(createPost) }}
-
-            <input type="submit" class="btn btn-primary" value="Create" />
+            {{ form_row(createPost.title) }}
+            {{ form_row(createPost.content, { 'attr': {'class': 'g-form-textarea'} }) }}
+            <input type="submit" class="btn btn-primary" value="Publish" />
         {{ form_end(createPost) }}
+        </div>
         </div>
 </section>
 {% endblock %}

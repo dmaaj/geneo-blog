@@ -1,20 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PostController!{% endblock %}
+{% block title %}
+{{ parent() }} | Dashboard
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<section class="my-4">
+    <div class="d-flex">
+        <h2>{{post.title |title}}</h2>
+        <div class="ml-auto">
+            <a class="btn" href="#" id="postDropdown"
+            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                &vellip;
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="postDropdown">
+                <a class="dropdown-item" href="{{ path('dashboard') }}">Dashboard</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex">
+        <img class="user-avatar mr-2" src="{{post.author.getGravatarUrl()}}"/>
+        <small>{{post.author.username}}, {{post.getcreatedAt|date("M d")}}</small>
+    </div>
+</section>
+<section>
+    <p>{{post.content}}</p>
+</section>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<section class="g-comments mt-5">
+    <h3> Discussions</h3>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/maaj/maaj/fgeneo-blog/src/Controller/PostController.php'|file_link(0) }}">src/Controller/PostController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/maaj/maaj/fgeneo-blog/templates/post/index.html.twig'|file_link(0) }}">templates/post/index.html.twig</a></code></li>
-    </ul>
-</div>
+     {{ form_start(commentForm) }}
+        {{ form_row(commentForm.comment) }}
+
+        <button type="submit" class="btn btn-primary g-right">Comment</button>
+
+    {{ form_end(commentForm) }}
+    
+    <div class="mt-4">
+
+    {% for comment in post.postComments %}
+        <div class="card my-2">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <img class="user-avatar mr-2" src="{{comment.user.getGravatarUrl()}}"/>
+                        <span> {{comment.user.username}}</span>
+                    </div>
+                    <small> {{comment.getcreatedAt |date("M d, Y H:m:s")}}</small>
+                </div>
+                <p class="mt-2">{{comment.comment}}</p>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</section>
 {% endblock %}

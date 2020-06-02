@@ -47,4 +47,12 @@ class PostCommentRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function create($data, Object $post, Object $user)
+    {
+        $comment = new PostComment();
+        $comment->setUser($user)->setPost($post)->setComment($data['comment']);
+        $this->_em->persist($comment);
+        $this->_em->flush();
+    }
 }

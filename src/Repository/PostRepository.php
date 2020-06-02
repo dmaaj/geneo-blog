@@ -56,4 +56,23 @@ class PostRepository extends ServiceEntityRepository
         $this->_em->persist($post);
         $this->_em->flush();
     }
+
+    public function getLatest()
+    {
+        return $this->findBy([], ['created_at' => 'DESC']);
+    }
+
+    public function getSinglePost($author, $slug)
+    {
+
+        $query = $this->createQueryBuilder('e')
+            ->addSelect('u') // to make Doctrine actually use the join
+            ->leftJoin('e.author', 'u')
+            ->where('e.slug= :slug')
+            ->andWhere('u.username= :author')
+            ->setParameters(['slug' => $slug, 'author' => $author])
+            ->getQuery();
+
+        return $query->getSingleResult();
+    }
 }

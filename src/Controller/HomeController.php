@@ -6,7 +6,7 @@ use App\Repository\PostRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class DashboardController extends AbstractController
+class HomeController extends AbstractController
 {
     private $postRepository;
 
@@ -15,14 +15,14 @@ class DashboardController extends AbstractController
         $this->postRepository = $postRepository;
     }
     /**
-     * @Route("/dashboard", name="dashboard")
+     * @Route("/", name="home")
      */
     public function index()
     {
-        $posts = $this->getUser()->getPosts();
-        
-        return $this->render('dashboard/index.html.twig', [
-            'posts'           => $posts
+        $posts = $this->postRepository->getLatest();
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'HomeController',
+            'posts' => $posts
         ]);
     }
 }
