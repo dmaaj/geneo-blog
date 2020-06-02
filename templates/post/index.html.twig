@@ -14,9 +14,9 @@
                 &vellip;
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="postDropdown">
-                <a class="dropdown-item" href="{{ path('dashboard') }}">Dashboard</a>
+                <a class="dropdown-item" href="{{ path('dashboard') }}">Edit</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a>
+                <a class="dropdown-item" href="{{ path('app_logout') }}">Delete</a>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
     <h3> Discussions</h3>
 
      {{ form_start(commentForm) }}
-        {{ form_row(commentForm.comment) }}
+        {{ form_row(commentForm.comment, {'label':false, 'attr':{'class': "commentbox"}}) }}
 
         <button type="submit" class="btn btn-primary g-right">Comment</button>
 

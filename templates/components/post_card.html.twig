@@ -1,11 +1,13 @@
 <div class="card g-excerpts">
     <a href="{{ path('post.index', {'author':post.author.username, 'slug': post.slug }) }}">
     <div class="card-body">
-        <img src="{{post.author.getGravatarUrl()}}"/>
         <div class="g-excerpts-content">
-            <h4 class="g-excerpts-title">{{post.author.username}}</h4>
-            <span>Published on {{post.getcreatedAt|date("M d, Y")}}</span>
             <h2>{{ post.title |title }}</h2>
+            <div class="d-flex">
+                <img src="{{post.author.getGravatarUrl()}}" class="user-avatar mr-2"/>
+                <h4 class="g-excerpts-title">{{post.author.username}}</h4>
+                <small class="ml-auto">{{post.getcreatedAt|date("M d, Y")}}</small>
+            </div>
             <p class="g-excerpts-desc">{{post.content}}</p>
         </div>
     </div>
