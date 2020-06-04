@@ -16,9 +16,9 @@
 
             {% if is_granted('edit', post) %}
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="postDropdown">
-                <a class="dropdown-item" href="{{path('post.edit', {id : post.id})}}">Edit</a>
+                <a class="dropdown-item" href="{{path('post.edit', {id : post.id}) }}">Edit</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{{ path('app_logout') }}">Delete</a>
+                <a class="dropdown-item" href="{{ path('post.delete', {id: post.id}) }}">Delete</a>
             </div>
             {% endif %}
         </div>

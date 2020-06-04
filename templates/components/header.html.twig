@@ -14,7 +14,14 @@
           <img src="{{app.user.getGravatarUrl()}}" class="user-avatar"/> {{app.user.username}}
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+            {% if is_granted('ROLE_ADMIN') %}
+              <a class="dropdown-item" href="{{ path('admin.index') }}">SuperAdmin</a>
+              <div class="dropdown-divider"></div>
+            {% endif %}
+            
             <a class="dropdown-item" href="{{ path('dashboard') }}">Dashboard</a>
+            <a class="dropdown-item" href="{{ path('post.create') }}">New Post</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a>
           </div>

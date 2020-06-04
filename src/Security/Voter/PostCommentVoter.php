@@ -2,18 +2,18 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Post;
 use App\Entity\User;
+use App\Entity\PostComment;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Security;
 
-class PostVoter extends Voter
+class PostCommentVoter extends Voter
 {
     const VIEW = 'view';
-    const EDIT = 'edit';
     const CREATE = 'create';
+
 
     private $security;
 
@@ -24,8 +24,8 @@ class PostVoter extends Voter
 
     protected function supports($attribute, $subject)
     {
-        return in_array($attribute, [self::VIEW, self::EDIT, self::CREATE])
-            && $subject instanceof \App\Entity\Post;
+        return in_array($attribute, [self::VIEW, self::CREATE])
+            && $subject instanceof \App\Entity\PostComment;
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
@@ -42,9 +42,6 @@ class PostVoter extends Voter
 
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
-            case self::EDIT:
-                return $this->canEdit($subject, $user);
-
             case self::VIEW:
                 return $this->canView($subject, $user);
 
@@ -55,19 +52,15 @@ class PostVoter extends Voter
         return false;
     }
 
-    protected function canView(Post $post, User $user)
+    protected function canView(PostComment $comment, User $user)
     {
-        // anybody can view a post
+        // anybody can view comment
         return true;
     }
 
-    protected function canEdit(Post $post, User $user)
+    protected function canCreate(PostComment $comment, User $user)
     {
-        return $user === $post->getAuthor();
-    }
-
-    protected function canCreate(Post $post, User $user)
-    {
+        // everyone can comment except this guy
         if ($this->security->isGranted(User::GUEST)){
             return false;
         };

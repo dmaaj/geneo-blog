@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\DTO\CreatePostDto;
+use App\Entity\PostComment;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use App\Repository\{PostCommentRepository, PostRepository};
@@ -41,7 +42,10 @@ class PostController extends AbstractController
         $form->handleRequest($request);
         
         if($form->isSubmitted() && $form->isValid()){
+            $this->denyAccessUnlessGranted('create', new PostComment());
+            
             $this->postCommentRepository->create($form->getData(), $post, $this->getUser());
+            $this->addFlash('success', 'Successfully commented');
             
             $this->redirect($request->headers->get('referer'));
         }
@@ -63,10 +67,9 @@ class PostController extends AbstractController
         $form->handleRequest($request);
         
         if($form->isSubmitted() && $form->isValid()){
-
             $this->postRepository->create($post, $this->getUser());
 
-            $this->getUser()->setFlash('success', 'Successfully created post');
+            $this->addFlash('success', 'Successfully created post');
             
             return $this->redirectToRoute('dashboard');
         }
@@ -76,13 +79,28 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/dashboard/p/{id}/edit", name="edit", methods={"GET","PUT"})
+     * @Route("/dashboard/p/{id}/edit", name="edit", methods={"GET","POST"})
      */
     public function edit(Post $post, Request $request)
     {
         $this->denyAccessUnlessGranted('edit', $post);
+        $postDto = CreatePostDto::fromPost($post);
 
-        dd($post);
+        $form = $this->createForm(CreatePostFormType::class, $postDto);
+        $form->handleRequest($request);
+        
+        if($form->isSubmitted() && $form->isValid()){
+
+            $this->postRepository->update($postDto, $post);
+
+            $this->addFlash('success', 'Successfully updated post');
+            
+            return $this->redirectToRoute('dashboard');
+        }
+
+        return $this->render('post/create.html.twig', [
+            'createPost' => $form->createView(),
+        ]);
     }
 
     /**
@@ -92,7 +110,12 @@ class PostController extends AbstractController
     {
         $this->denyAccessUnlessGranted('edit', $post);
 
-        dd($post);
+        $this->postRepository->delete($post);
+
+        $this->addFlash('success', 'Successfully deleted post');
+
+        return $this->redirectToRoute('dashboard');
+
     }
 
 

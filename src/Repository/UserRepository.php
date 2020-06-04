@@ -77,9 +77,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 $userdto->get('plainPassword')->getData()
             )
         );
-
-       
         $this->_em->persist($user);
         $this->_em->flush();
+    }
+
+    public function getAllUserWithPostCount()
+    {
+        $query = $this->createQueryBuilder('e')
+        ->leftJoin('e.posts', 'u')
+        ->addSelect('COUNT(u.id)')
+        ->groupBy('e.id')
+        ->getQuery();
+
+        return $query->getResult();
     }
 }

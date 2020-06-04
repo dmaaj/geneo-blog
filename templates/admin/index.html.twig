@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<section class="my-4">
+    <h2>Admin Dashboard</h2>
+</section>
+<section>
+    <table class="table table-bordered table-striped">
+    <thead>
+        <th> User </th>
+        <th> Posts </th>
+        <th> Action </th>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td> {{user[0].username}} </td>
+            <td> {{user[1]}} </td>
+            <td> <a href="{{ path('admin.user', {id: user[0].getId()}) }}" class="btn btn-primary"> Manage </a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</section>
+{% endblock %}

@@ -10,6 +10,13 @@
     <body>
         {% include "components/header.html.twig" %}
         <section class="container">
+        
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
         {% block body %}{% endblock %}
         </section>
         {% block javascripts %}

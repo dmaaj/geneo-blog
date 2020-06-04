@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<section class="my-4">
+    <h2>Admin Dashboard</h2>
+</section>
+<section>
+    <table class="table table-bordered table-striped">
+    <thead>
+        <th> User </th>
+        <th> Role </th>
+        <th> Permission </th>
+        <th> Action </th>
+    </thead>
+    <tbody>
+    <tr>
+        <td> {{user.username}} </td>
+        <td> {{user.roles[0]}} </td>
+        <td> {{user.getRolePermission() |join(', ')}} </td>
+        <td> <button class="btn btn-primary"> Manage </button></td>
+    </tr>
+    </tbody>
+    </table>
+</section>
+{% endblock %}

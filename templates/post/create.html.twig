@@ -10,7 +10,7 @@
     {% for flashError in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flashError }}</div>
     {% endfor %}
-        <h3>Create Post</h1>
+    
         <div class="card">
         <div class="card-body">
         {{ form_start(createPost) }}

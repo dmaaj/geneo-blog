@@ -57,14 +57,37 @@ class PostRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
+    public function update(Object $dto, Post $post)
+    {
+        $post->setTitle($dto->title)->setContent($dto->content);
+        $this->_em->persist($post);
+        $this->_em->flush();
+    }
+
+    
+    public function delete(Post $post)
+    {
+        $this->_em->remove($post);
+        $this->_em->flush();
+    }
+
+    /**
+     * Order posts by created_at
+     * @return Collection
+     */
     public function getLatest()
     {
         return $this->findBy([], ['created_at' => 'DESC']);
     }
 
+    /**
+     * Get Single Post by author and post slug
+     * @param [type] $author
+     * @param [type] $slug
+     * @return Post $post
+     */
     public function getSinglePost($author, $slug)
     {
-
         $query = $this->createQueryBuilder('e')
             ->addSelect('u') // to make Doctrine actually use the join
             ->leftJoin('e.author', 'u')
