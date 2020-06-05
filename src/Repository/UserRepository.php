@@ -68,17 +68,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
     */
 
-    public function create($userdto)
+    public function create($user, $plainPassword)
     {
-        $user = new User();
         $user->setPassword(
             $this->encoder->encodePassword(
                 $user,
-                $userdto->get('plainPassword')->getData()
-            )
+                $plainPassword)
         );
         $this->_em->persist($user);
         $this->_em->flush();
+        return $user;
     }
 
     public function getAllUserWithPostCount()
@@ -90,5 +89,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ->getQuery();
 
         return $query->getResult();
+    }
+
+    public function promoteUser(User $user, $data)
+    {
+        $user->setRoles([$data['roles']]);
+        $this->_em->persist($user);
+        $this->_em->flush();
     }
 }

@@ -20,6 +20,7 @@ class HomeController extends AbstractController
     public function index()
     {
         $posts = $this->postRepository->getLatest();
+        
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'posts' => $posts

@@ -4,6 +4,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Post;
 use App\Entity\User;
+use App\Repository\ScopeRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -17,9 +18,12 @@ class PostVoter extends Voter
 
     private $security;
 
-    public function __construct(Security $security)
+    private $scopeRepository;
+
+    public function __construct(Security $security, ScopeRepository $scopeRepository)
     {   
         $this->security = $security;
+        $this->scopeRepository = $scopeRepository;
     }
 
     protected function supports($attribute, $subject)
@@ -66,11 +70,15 @@ class PostVoter extends Voter
         return $user === $post->getAuthor();
     }
 
+    // ACL is deprecated for symfony 4.0 upward
+    // implemented a scope/grant structure for voter
     protected function canCreate(Post $post, User $user)
     {
-        if ($this->security->isGranted(User::GUEST)){
+        $required_permission = $this->scopeRepository->findOneBy(['grants' => 'post.create']);
+        
+        if(!$user->getScopes()->contains($required_permission)) {
             return false;
-        };
+        }
 
         return true;
     }

@@ -77,18 +77,23 @@ class User implements UserInterface
      */
     private $postComments;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Scope::class, mappedBy="user")
+     */
+    private $scopes;
+
+
+
 
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->postComments = new ArrayCollection();
+        $this->scopes = new ArrayCollection();
     }
 
     const ADMIN = 'ROLE_ADMIN';
     const GUEST = 'ROLE_GUEST';
-
-    const ADMIN_GROUP = ['View', 'Edit', 'Create', 'Delete'];
-    const GUEST_GROUP = ['View'];
     
 
     public function getId(): ?int
@@ -269,18 +274,32 @@ class User implements UserInterface
         return "https://www.gravatar.com/avatar/$emailHash?s=200";
     }
 
-    public function getRolePermission()
+    /**
+     * @return Collection|Scope[]
+     */
+    public function getScopes(): Collection
     {
-        $roles = $this->getRoles();
-        switch ($roles[0]) {
-            case self::ADMIN:
-                return self::ADMIN_GROUP;
-
-            case self::GUEST:
-                return self::GUEST_GROUP;
-
-            default:
-                return self::ADMIN_GROUP;
-        }
+        return $this->scopes;
     }
+
+    public function addScope(Scope $scope): self
+    {
+        if (!$this->scopes->contains($scope)) {
+            $this->scopes[] = $scope;
+            $scope->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScope(Scope $scope): self
+    {
+        if ($this->scopes->contains($scope)) {
+            $this->scopes->removeElement($scope);
+            $scope->removeUser($this);
+        }
+
+        return $this;
+    }
+
 }

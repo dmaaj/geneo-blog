@@ -4,6 +4,7 @@ namespace App\Security\Voter;
 
 use App\Entity\User;
 use App\Entity\PostComment;
+use App\Repository\ScopeRepository;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -17,9 +18,12 @@ class PostCommentVoter extends Voter
 
     private $security;
 
-    public function __construct(Security $security)
+    private $scopeRepository;
+
+    public function __construct(Security $security, ScopeRepository $scopeRepository)
     {   
         $this->security = $security;
+        $this->scopeRepository = $scopeRepository;
     }
 
     protected function supports($attribute, $subject)
@@ -60,10 +64,11 @@ class PostCommentVoter extends Voter
 
     protected function canCreate(PostComment $comment, User $user)
     {
-        // everyone can comment except this guy
-        if ($this->security->isGranted(User::GUEST)){
+        $required_permission = $this->scopeRepository->findOneBy(['grants' => 'comment.create']);
+        
+        if(!$user->getScopes()->contains($required_permission)) {
             return false;
-        };
+        }
 
         return true;
     }

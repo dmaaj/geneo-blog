@@ -10,20 +10,46 @@
 </section>
 <section>
     <table class="table table-bordered table-striped">
-    <thead>
-        <th> User </th>
-        <th> Role </th>
-        <th> Permission </th>
-        <th> Action </th>
-    </thead>
+    
     <tbody>
     <tr>
+        <td> Name </td>
         <td> {{user.username}} </td>
-        <td> {{user.roles[0]}} </td>
-        <td> {{user.getRolePermission() |join(', ')}} </td>
-        <td> <button class="btn btn-primary"> Manage </button></td>
+    </tr>
+    <tr>
+        <td> Role</td>
+        <td> {{user.roles|join(', ')}} </td>
+    </tr>
+    <tr>
+        <td> Permissions</td>
+        <td> {% for scope in user.scopes %} 
+                {{scope.grants|join(', ')}}
+            {% endfor %}
+        </td>
     </tr>
     </tbody>
     </table>
+
+    <div class="row">
+
+    <div class="col-md-6">
+     {{ form_start(form) }}
+        {{form_row(form.roles)}}
+         <button type="submit" class="btn btn-success">Change Role</button>
+     {{ form_end(form) }}
+
+    </div>
+
+    <div class="col-md-6">
+        <p>Change User Access Permission </p>
+        {{form_start(permissionForm, 
+            {'action': path('admin.permission', {'id': user.id}), 
+            attr: {novalidate: 'novalidate'}, 'method': 'POST'})
+        }}
+            {{form_row(permissionForm.post_create)}}
+            {{form_row(permissionForm.comment_create)}}
+            <button type="submit" class="btn btn-success">Change User Permission</button>
+        {{form_end(permissionForm)}}
+     </div>
 </section>
 {% endblock %}

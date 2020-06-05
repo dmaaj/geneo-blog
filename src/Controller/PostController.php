@@ -8,7 +8,7 @@ use App\Entity\PostComment;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use App\Repository\{PostCommentRepository, PostRepository};
-use App\Form\{CreatePostCommentFormType, CreatePostFormType};
+use App\Form\{CreatePostCommentFormType, CreatePostFormType, DeletePostFormType};
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -39,12 +39,15 @@ class PostController extends AbstractController
         }
 
         $form = $this->createForm(CreatePostCommentFormType::class);
+
         $form->handleRequest($request);
         
         if($form->isSubmitted() && $form->isValid()){
+
             $this->denyAccessUnlessGranted('create', new PostComment());
             
             $this->postCommentRepository->create($form->getData(), $post, $this->getUser());
+
             $this->addFlash('success', 'Successfully commented');
             
             $this->redirect($request->headers->get('referer'));
@@ -64,15 +67,18 @@ class PostController extends AbstractController
         $this->denyAccessUnlessGranted('create', new Post());
 
         $form = $this->createForm(CreatePostFormType::class, $post);
+
         $form->handleRequest($request);
         
         if($form->isSubmitted() && $form->isValid()){
+
             $this->postRepository->create($post, $this->getUser());
 
             $this->addFlash('success', 'Successfully created post');
             
             return $this->redirectToRoute('dashboard');
         }
+
         return $this->render('post/create.html.twig', [
             'createPost' => $form->createView(),
         ]);
@@ -84,9 +90,11 @@ class PostController extends AbstractController
     public function edit(Post $post, Request $request)
     {
         $this->denyAccessUnlessGranted('edit', $post);
+        
         $postDto = CreatePostDto::fromPost($post);
 
         $form = $this->createForm(CreatePostFormType::class, $postDto);
+
         $form->handleRequest($request);
         
         if($form->isSubmitted() && $form->isValid()){
@@ -104,17 +112,30 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/dashboard/p/{id}/delete", name="delete", methods={"delete"})
+     * @Route("/dashboard/p/{id}/delete", name="delete", methods={"GET","Delete"})
      */
     public function delete(Post $post, Request $request)
     {
         $this->denyAccessUnlessGranted('edit', $post);
 
-        $this->postRepository->delete($post);
+        $postDto = CreatePostDto::fromPost($post);
 
-        $this->addFlash('success', 'Successfully deleted post');
+        $form = $this->createForm(DeletePostFormType::class, $postDto);
 
-        return $this->redirectToRoute('dashboard');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->postRepository->delete($post);
+
+            $this->addFlash('success', 'Successfully deleted post');
+
+            return $this->redirectToRoute('dashboard');
+        }
+        
+        return $this->render('post/delete_modal.html.twig', [
+            'delete_form' => $form->createView(),
+            'post' => $post,
+        ]);
 
     }
 
