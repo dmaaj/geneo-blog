@@ -24,6 +24,7 @@
   - password: password
 - to run tests ```php bin/phpunit```
 
+
 ## Routes
 
 - ```/login``` to login
@@ -36,3 +37,11 @@
 - ```@{autho}/{post-slug}``` at the bottom of every post you have a form to post comment
 - ```/admin``` route is for admin users; it lists all the users and the posts count
 - ```/admin/{user_id}``` clicking the manage user on the ```/admin``` page would load user management page to manage user permissions
+
+
+### Notes
+
+- There are only two user roles, admin and basic user. You can switch user role by going to the admin manage user page
+- User's have permission, you can view user's permission on the admin manage user page. 
+- You can also toggle user permissions (at the moment you can only toggle two permissions, ```post.create``` and ```comment.create```)
+- Test Coverage is low
