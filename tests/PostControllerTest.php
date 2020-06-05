@@ -5,7 +5,6 @@ namespace App\Tests;
 use App\Entity\User;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 
@@ -42,6 +41,25 @@ class PostControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('p', 'test is a good thing');
        
+    }
+
+    public function testPostComment()
+    {
+        $client = $this->createAuthorizedClient();
+        
+        $crawler = $client->request('GET', '/@admin/test');
+
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Comment')->form();
+
+        $form['create_post_comment_form[comment]'] = 'I think this works';
+
+        $crawler = $client->submit($form);
+
+        $this->assertResponseIsSuccessful();
+        
+        $this->assertSelectorTextContains('p.mt-2', 'I think this works');
 
     }
 

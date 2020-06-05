@@ -34,7 +34,7 @@
 - ```/dashboard/create``` to create a new post *** only logged in users can hit this route
 - ```@{author}/{post-slug}``` to view a created post
 - if user is authorised to edit post, you should have a dropdown menu on the right, populated with edit post, and delete post on the post page
-- ```@{autho}/{post-slug}``` at the bottom of every post you have a form to post comment
+- ```@{author}/{post-slug}``` at the bottom of every post you have a form to post comment
 - ```/admin``` route is for admin users; it lists all the users and the posts count
 - ```/admin/{user_id}``` clicking the manage user on the ```/admin``` page would load user management page to manage user permissions
 
@@ -43,5 +43,7 @@
 
 - There are only two user roles, admin and basic user. You can switch user role by going to the admin manage user page
 - User's have permission, you can view user's permission on the admin manage user page. 
+- Permissions are scopes binding user's access to some features an example is the <b>POST<b> entity for CRUD, you'd need create permission, view permission, update permission and delete permission which are stored as ```post.create```, ```post.view```, ```post.delete```, ```post.edit```. A similar example would the <a href="https://oauth.net/2/scope/"><strong> Oauth Scope <strong></a>
 - You can also toggle user permissions (at the moment you can only toggle two permissions, ```post.create``` and ```comment.create```)
-- Test Coverage is low
+- Test Coverage is 59.4%
+- To dockerise the app follow this tutorial <a href="https://knplabs.com/en/blog/how-to-dockerise-a-symfony-4-project">Link</a>
