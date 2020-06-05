@@ -26,7 +26,6 @@ class AdminControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/admin');
 
-
         $this->assertResponseRedirects();
         $client->followRedirect();
 
